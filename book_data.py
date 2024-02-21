@@ -2,15 +2,11 @@
 import requests
 from bs4 import BeautifulSoup
 import csv
-
-BASE_URL = "https://books.toscrape.com/"
-
-
-def clean_text(text):
-    return text.replace('\n', '').replace('£', '').replace('../', '')
+from pathlib import Path
+from my_library import *
 
 
-def book_information_scraper(url):
+def scrap_book_information(url):
     response = requests.get(url)
     response.encoding = response.apparent_encoding
 
@@ -61,16 +57,24 @@ def book_information_scraper(url):
                         "product_description": product_description
                         }
 
-    # Save scraper information in a CSV file
-    with open("book_information.csv", "w", newline='') as file:
-        csv.writer(file).writerows([[header for header in book_information],
-                             [information for information in book_information.values()]])
-
     return book_information
 
 
+# Save scraper information in a CSV file
+def save_data(data):
+    if Path('book_information.csv').exists():
+        with open('book_information.csv', "a", newline='') as file:
+            writer = csv.writer(file, delimiter=',', quotechar='"')
+            writer.writerow([information for information in data.values()])
+    else:
+        with open('book_information.csv', "w", newline='') as file:
+            writer = csv.writer(file, delimiter=',', quotechar='"')
+            writer.writerows([[header for header in data],
+                                 [information for information in data.values()]])
+
+
+
 # Call the function for a product page url
-print(book_information_scraper("https://books.toscrape.com/catalogue/its-only-the-himalayas_981/index.html"))
-
-
+#book_data = scrap_book_information("https://books.toscrape.com/catalogue/its-only-the-himalayas_981/index.html")
+#print(type(book_data))
 
