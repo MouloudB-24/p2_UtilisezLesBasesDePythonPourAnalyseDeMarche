@@ -6,7 +6,9 @@ from pathlib import Path
 from my_library import *
 
 
-def scrap_book_information(url):
+def scrap_book_data(url):
+    global category
+
     response = requests.get(url)
     response.encoding = response.apparent_encoding
 
@@ -42,7 +44,8 @@ def scrap_book_information(url):
     review_rating = p_star['class'][1]
 
     # Description
-    product_description = soup.find('article', class_='product_page').find('p', recursive=False).text
+    product_description_p = soup.find('article', class_='product_page').find('p', recursive=False)
+    product_description = product_description_p.text if product_description_p else ''
 
     # Summary of book scraper information
     book_information = {"title": title,
@@ -62,12 +65,12 @@ def scrap_book_information(url):
 
 # Save scraper information in a CSV file
 def save_data(data):
-    if Path('book_information.csv').exists():
-        with open('book_information.csv', "a", newline='') as file:
+    if Path(category + '.csv').exists():
+        with open(category + '.csv', "a", newline='') as file:
             writer = csv.writer(file, delimiter=',', quotechar='"')
             writer.writerow([information for information in data.values()])
     else:
-        with open('book_information.csv', "w", newline='') as file:
+        with open(category + '.csv', "w", newline='') as file:
             writer = csv.writer(file, delimiter=',', quotechar='"')
             writer.writerows([[header for header in data],
                                  [information for information in data.values()]])
