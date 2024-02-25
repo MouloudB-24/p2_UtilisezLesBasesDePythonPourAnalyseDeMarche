@@ -7,7 +7,7 @@ from my_library import *
 
 
 def scrap_book_data(url):
-    global category
+    global category, image_url
 
     response = requests.get(url)
     response.encoding = response.apparent_encoding
@@ -48,7 +48,7 @@ def scrap_book_data(url):
     product_description = product_description_p.text if product_description_p else ''
 
     # Summary of book scraper information
-    book_information = {"title": title,
+    book_data = {"title": title,
                         "category": category,
                         "universal_product_code": universal_product_code,
                         "product_page_url": url,
@@ -60,7 +60,7 @@ def scrap_book_data(url):
                         "product_description": product_description
                         }
 
-    return book_information
+    return book_data
 
 
 # Save scraper information in a CSV file
@@ -76,8 +76,16 @@ def save_data(data):
                                  [information for information in data.values()]])
 
 
+def download_and_save_images(url):
+    response = requests.get(url)
+    filename = url.split('/')[-1]
+
+    if response.status_code == 200:
+        with open(filename, 'wb') as file:
+            file.write(response.content)
 
 # Call the function for a product page url
-#book_data = scrap_book_information("https://books.toscrape.com/catalogue/its-only-the-himalayas_981/index.html")
-#print(type(book_data))
+example = scrap_book_data("https://books.toscrape.com/catalogue/its-only-the-himalayas_981/index.html")
+download_and_save_images(example['image_url'])
+print(example)
 

@@ -6,15 +6,22 @@ urls_of_category = scrap_category_urls('https://books.toscrape.com')
 
 book_number = 1
 category_number = 1
+
 for url in urls_of_category:
     urls_of_books = scrap_book_urls(url)
+
     for url in urls_of_books:
+        # Monitor scraper progress
         print(f" Category number {category_number} Book number : {book_number}")
+
         # book data
         book_data = scrap_book_data(url)
 
         # Save data in a CSV file
         save_data(book_data)
+
+        # Save book image
+        download_and_save_images(book_data["image_url"])
 
         book_number += 1
     category_number += 1
