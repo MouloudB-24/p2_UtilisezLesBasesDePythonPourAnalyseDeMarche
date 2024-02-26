@@ -1,11 +1,9 @@
-import requests
-from bs4 import BeautifulSoup
-from urllib.parse import urljoin
 from my_library import *
+from urllib.parse import urljoin
 
 
-def scrap_book_category(url):
-    links_to_books = []
+def scrap_book_urls(url):
+    urls_of_books = []
     while True:
         response = requests.get(url)
         if response.status_code != 200:
@@ -17,7 +15,7 @@ def scrap_book_category(url):
         title_h3 = soup.find_all("h3")
         link_a = [link.find('a')["href"] for link in title_h3]
 
-        links_to_books.extend([BASE_URL + "catalogue/" + link for link in link_a])
+        urls_of_books.extend([BASE_URL + "catalogue/" + link for link in link_a])
 
         next_page_element = soup.find('li', class_="next")
 
@@ -29,7 +27,7 @@ def scrap_book_category(url):
 
         url = urljoin(url, next_page_url)
 
-    return links_to_books
+    return urls_of_books
 
 
-#print(scrap_book_category("https://books.toscrape.com/catalogue/category/books/art_25/index.html"))
+#print(scrap_book_urls("https://books.toscrape.com/catalogue/category/books/art_25/index.html"))

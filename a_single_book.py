@@ -1,13 +1,11 @@
-# Import the necessary packages
-import requests
-from bs4 import BeautifulSoup
+from my_library import *
 import csv
 from pathlib import Path
-from my_library import *
+import string
 
 
 def scrap_book_data(url):
-    global category, image_url
+    global category, title
 
     response = requests.get(url)
     response.encoding = response.apparent_encoding
@@ -49,43 +47,55 @@ def scrap_book_data(url):
 
     # Summary of book scraper information
     book_data = {"title": title,
-                        "category": category,
-                        "universal_product_code": universal_product_code,
-                        "product_page_url": url,
-                        'image_url': image_url,
-                        "price_excluding_tax": price_excluding_tax,
-                        'price_including_tax': price_including_tax,
-                        "number_available": number_available,
-                        "review_rating": review_rating,
-                        "product_description": product_description
-                        }
-
+                 "category": category,
+                 "universal_product_code": universal_product_code,
+                 "product_page_url": url,
+                 'image_url': image_url,
+                 "price_excluding_tax": price_excluding_tax,
+                 'price_including_tax': price_including_tax,
+                 "number_available": number_available,
+                 "review_rating": review_rating,
+                 "product_description": product_description
+                 }
     return book_data
 
 
-# Save scraper information in a CSV file
+# Save scraper information in a CSV filer
 def save_data(data):
-    if Path(category + '.csv').exists():
-        with open(category + '.csv', "a", newline='') as file:
-            writer = csv.writer(file, delimiter=',', quotechar='"')
-            writer.writerow([information for information in data.values()])
-    else:
-        with open(category + '.csv', "w", newline='') as file:
-            writer = csv.writer(file, delimiter=',', quotechar='"')
-            writer.writerows([[header for header in data],
-                                 [information for information in data.values()]])
+    global download_folder
+    download_folder = Path.cwd() / 'all_book_categories' / category / 'images_of_books'
+    download_folder.mkdir(exist_ok=True, parents=True)
+
+    csv_path = download_folder.parent / (category + '.csv')
+
+    with open(csv_path, "a", newline='') as file:
+        writer = csv.writer(file, delimiter=',', quotechar='"')
+
+        if file.tell() == 0:
+            # The file is empty, write the headers
+            writer.writerow(data.keys())
+
+        writer.writerow(data.values())
+
+
+def clean_title(title):
+    title = title.split('(')[0]
+
+    for char in title:
+        if char in string.punctuation:
+            title = title.replace(char, '')
+
+    title = title.strip().replace(' ', '_')
+    return title
 
 
 def download_and_save_images(url):
     response = requests.get(url)
-    filename = url.split('/')[-1]
+    filename = clean_title(title) + '.jpg'
 
-    if response.status_code == 200:
-        with open(filename, 'wb') as file:
-            file.write(response.content)
+    if response.status_code != 200:
+        return f'Error status code {response.status_code}'
 
-# Call the function for a product page url
-example = scrap_book_data("https://books.toscrape.com/catalogue/its-only-the-himalayas_981/index.html")
-download_and_save_images(example['image_url'])
-print(example)
+    with open(download_folder / filename, 'wb') as file:
+        file.write(response.content)
 
