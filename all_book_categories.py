@@ -1,6 +1,7 @@
 from my_library import *
 
 
+# Scrape all book category urls
 def scrap_category_urls(url):
     response = requests.get(url)
     response.encoding = response.apparent_encoding
@@ -14,6 +15,3 @@ def scrap_category_urls(url):
     urls_of_categories = [BASE_URL + li.find('a')['href'] for li in li_category]
 
     return urls_of_categories
-
-
-#print(scrap_category_urls("https://books.toscrape.com/index.html"))

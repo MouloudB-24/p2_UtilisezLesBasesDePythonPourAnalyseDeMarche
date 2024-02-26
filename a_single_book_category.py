@@ -2,6 +2,7 @@ from my_library import *
 from urllib.parse import urljoin
 
 
+# Scrape all urls for all books in a category
 def scrap_book_urls(url):
     urls_of_books = []
     while True:
@@ -28,6 +29,3 @@ def scrap_book_urls(url):
         url = urljoin(url, next_page_url)
 
     return urls_of_books
-
-
-#print(scrap_book_urls("https://books.toscrape.com/catalogue/category/books/art_25/index.html"))

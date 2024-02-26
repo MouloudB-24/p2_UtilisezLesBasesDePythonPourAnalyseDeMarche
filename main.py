@@ -19,12 +19,12 @@ def basic_scrapping(url):
 
 while True:
     print("""
-    1 : Scraper data from all books
-    2 : Scraper data from books in a category
-    3 : Scraper data from a single book
-    4 : Quit program
+    1 → Scraper data from all books
+    2 → Scraper data from books in a category
+    3 → Scraper data from a single book
+    4 → Quit program
           """)
-    your_choice = input("Enter your choice: ")
+    your_choice = input("Enter your choice 👉: ")
 
     if your_choice not in ['1', '2', '3', '4']:
         continue
@@ -45,7 +45,7 @@ while True:
             n += 1
         break
 
-    url = input("Enter URL: ")
+    url = input("Enter URL 👉: ")
 
     # Scrape category data
     if your_choice == '2':
@@ -63,4 +63,4 @@ while True:
         break
 
 end = time.time()
-print(f'\n End : {end - start}')
+print(f'\n End 👏: {end - start}')

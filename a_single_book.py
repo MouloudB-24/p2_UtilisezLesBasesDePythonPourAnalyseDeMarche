@@ -4,6 +4,19 @@ from pathlib import Path
 import string
 
 
+def clean_title(title):
+    # Delete content between brackets
+    title = title.split('(')[0]
+
+    # Filter special characters
+    title = ''.join(char for char in title if char not in string.punctuation)
+
+    # `Replace spaces with underscores
+    title = title.strip().replace(' ', '_')
+    return title
+
+
+# Scrape book data
 def scrap_book_data(url):
     global category, title
 
@@ -60,9 +73,10 @@ def scrap_book_data(url):
     return book_data
 
 
-# Save scraper information in a CSV filer
+# Save scraper data in a CSV file
 def save_data(data):
     global download_folder
+
     download_folder = Path.cwd() / 'all_book_categories' / category / 'images_of_books'
     download_folder.mkdir(exist_ok=True, parents=True)
 
@@ -74,21 +88,10 @@ def save_data(data):
         if file.tell() == 0:
             # The file is empty, write the headers
             writer.writerow(data.keys())
-
         writer.writerow(data.values())
 
 
-def clean_title(title):
-    title = title.split('(')[0]
-
-    for char in title:
-        if char in string.punctuation:
-            title = title.replace(char, '')
-
-    title = title.strip().replace(' ', '_')
-    return title
-
-
+# Download and save book images
 def download_and_save_images(url):
     response = requests.get(url)
     filename = clean_title(title) + '.jpg'
