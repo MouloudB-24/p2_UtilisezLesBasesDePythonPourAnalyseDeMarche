@@ -1,11 +1,15 @@
-from a_single_book import *
-from a_single_book_category import *
-from all_book_categories import *
 import time
+from tqdm import tqdm
 
+from a_single_book import scrap_book_data, save_data, download_and_save_images
+from a_single_book_category import scrap_book_urls
+from all_book_categories import scrap_category_urls
+
+# Records the start of performance measurement
 start = time.time()
 
 
+# La fon
 def basic_scrapping(url):
     # book data
     book_data = scrap_book_data(url)
@@ -19,10 +23,11 @@ def basic_scrapping(url):
 
 while True:
     print("""
-    1 → Scraper data from all books
-    2 → Scraper data from books in a category
-    3 → Scraper data from a single book
-    4 → Quit program
+    Welcome to the Books to scrapes price monitoring program, please select one of the following options:
+        1 → Scraper data from all books
+        2 → Scraper data from books in a category
+        3 → Scraper data from a single book
+        4 → Quit program
           """)
     your_choice = input("Enter your choice 👉: ")
 
@@ -37,10 +42,10 @@ while True:
         urls_of_category = scrap_category_urls('https://books.toscrape.com')
         n = 1
         for url in urls_of_category:
-            print(f'Category: {n}/{len(urls_of_category)}')
+            print(f'Scraping category {n}/{len(urls_of_category)} ...')
             urls_of_books = scrap_book_urls(url)
 
-            for url in urls_of_books:
+            for url in tqdm(urls_of_books):
                 basic_scrapping(url)
             n += 1
         break
@@ -52,8 +57,8 @@ while True:
         urls_of_books = scrap_book_urls(url)
         n = 1
         for url in urls_of_books:
-            print(f'Category: {n}/{len(urls_of_books)}')
             basic_scrapping(url)
+            time.sleep(1)
             n += 1
         break
 
@@ -62,5 +67,7 @@ while True:
         basic_scrapping(url)
         break
 
+# Records the end and displays the performance measurement
 end = time.time()
 print(f'\n End 👏: {end - start}')
+

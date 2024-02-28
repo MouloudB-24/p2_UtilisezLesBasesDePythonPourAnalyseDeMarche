@@ -1,33 +1,30 @@
-from my_library import *
 import csv
 from pathlib import Path
-import string
+
+import requests
+from bs4 import BeautifulSoup
+from my_library import BASE_URL, clean_text, clean_title
+
+# Create a session to manage HTTP requests
+session = requests.session()
 
 
-def clean_title(title):
-    # Delete content between brackets
-    title = title.split('(')[0]
-
-    # Filter special characters
-    title = ''.join(char for char in title if char not in string.punctuation)
-
-    # `Replace spaces with underscores
-    title = title.strip().replace(' ', '_')
-    return title
-
-
-# Scrape book data
+# Function to extract data from a book
 def scrap_book_data(url):
     global category, title
 
-    response = requests.get(url)
+    # Make a GET request to the book URL
+    response = session.get(url)
     response.encoding = response.apparent_encoding
 
+    # Check response status
     if response.status_code != 200:
-        return f"Error status code: {response.status_code}"
+        return f"HTTP request error status code: {response.status_code}"
+
+    # Use BeautifulSoup to analyze the page's HTML
     soup = BeautifulSoup(clean_text(response.text), 'html.parser')  # (lxml-xml, html5lib)
 
-    # Title
+    # Extract information from the book
     title = soup.find('h1').text
 
     # Category
@@ -73,32 +70,48 @@ def scrap_book_data(url):
     return book_data
 
 
-# Save scraper data in a CSV file
+# Function to save scraper data in a CSV file
 def save_data(data):
     global download_folder
 
+    # Create save folders
     download_folder = Path.cwd() / 'all_book_categories' / category / 'images_of_books'
     download_folder.mkdir(exist_ok=True, parents=True)
 
+    # Create CSV file path
     csv_path = download_folder.parent / (category + '.csv')
 
+    # Open CSV file in add mode
     with open(csv_path, "a", newline='') as file:
         writer = csv.writer(file, delimiter=',', quotechar='"')
 
+        # # Check if the file is empty, write the headers
         if file.tell() == 0:
-            # The file is empty, write the headers
             writer.writerow(data.keys())
+
+        # Write book data to CSV file
         writer.writerow(data.values())
 
 
-# Download and save book images
+# Function for downloading and saving book images
 def download_and_save_images(url):
-    response = requests.get(url)
+    # Make a GET request to obtain the image
+    response = session.get(url)
     filename = clean_title(title) + '.jpg'
+    image_path = download_folder / filename
 
+    # Check if the image exists in the folder
+    if image_path.exists():
+        return
+
+    # Check response status
     if response.status_code != 200:
         return f'Error status code {response.status_code}'
 
-    with open(download_folder / filename, 'wb') as file:
+    # Save image in folder
+    with open(image_path, 'wb') as file:
         file.write(response.content)
 
+
+# close the HTTP request session
+session.close()
