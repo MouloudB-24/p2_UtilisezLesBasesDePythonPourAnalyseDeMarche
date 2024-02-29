@@ -4,21 +4,27 @@ from tqdm import tqdm
 from a_single_book import scrap_book_data, save_data, download_and_save_images
 from a_single_book_category import scrap_book_urls
 from all_book_categories import scrap_category_urls
+from my_library import BASE_URL
 
 # Records the start of performance measurement
 start = time.time()
 
 
-# La fon
+# Function to extract and save data from a book
 def basic_scrapping(url):
-    # book data
-    book_data = scrap_book_data(url)
+    try:
+        # book data
+        book_data = scrap_book_data(url)
 
-    # Save data in a CSV file
-    save_data(book_data)
+        # Save data in a CSV file
+        save_data(book_data)
 
-    # Save book image
-    download_and_save_images(book_data["image_url"])
+        # Save book image
+        download_and_save_images(book_data["image_url"])
+        return book_data
+
+    except Exception as e:
+        print(f"Error in the book page {url} : {str(e)}")
 
 
 while True:
@@ -39,13 +45,11 @@ while True:
 
     # Scrape all category data
     if your_choice == '1':
-        urls_of_category = scrap_category_urls('https://books.toscrape.com')
         n = 1
-        for url in urls_of_category:
-            print(f'Scraping category {n}/{len(urls_of_category)} ...')
-            urls_of_books = scrap_book_urls(url)
+        for url in scrap_category_urls(BASE_URL):
+            print(f'Scraping category {n}/{len(scrap_category_urls(BASE_URL))} ...')
 
-            for url in tqdm(urls_of_books):
+            for url in tqdm(scrap_book_urls(url)):
                 basic_scrapping(url)
             n += 1
         break
@@ -54,9 +58,8 @@ while True:
 
     # Scrape category data
     if your_choice == '2':
-        urls_of_books = scrap_book_urls(url)
         n = 1
-        for url in urls_of_books:
+        for url in scrap_book_urls(url):
             basic_scrapping(url)
             time.sleep(1)
             n += 1

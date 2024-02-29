@@ -23,7 +23,8 @@ def scrap_book_urls(url):
 
             # Pagination
             title_h3 = soup.find_all("h3")
-            link_a = [link.find('a')["href"] for link in title_h3]
+            if title_h3:
+                link_a = [link.find('a')["href"] for link in soup.find_all("h3")]
 
             # Use a list comprehension for constructing URLs
             urls_of_books.extend([BASE_URL + "catalogue/" + link for link in link_a])
@@ -34,10 +35,10 @@ def scrap_book_urls(url):
             if not next_page_element:
                 break
 
-            next_page = next_page_element.find('a')
-            next_page_url = next_page.get('href')
+            next_page_url = next_page_element.find('a').get('href') if next_page_element.find('a') else False
 
             # Construct the URL for the next page
-            url = urljoin(url, next_page_url)
+            if next_page_element:
+                url = urljoin(url, next_page_url)
 
     return urls_of_books

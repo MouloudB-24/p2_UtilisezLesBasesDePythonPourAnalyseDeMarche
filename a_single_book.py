@@ -5,6 +5,12 @@ import requests
 from bs4 import BeautifulSoup
 from my_library import BASE_URL, clean_text, clean_title
 
+# Initialization of global variables
+category = ""
+title = ""
+download_folder = ""
+
+
 # Create a session to manage HTTP requests
 session = requests.session()
 
@@ -15,45 +21,53 @@ def scrap_book_data(url):
 
     # Make a GET request to the book URL
     response = session.get(url)
-    response.encoding = response.apparent_encoding
 
     # Check response status
     if response.status_code != 200:
         return f"HTTP request error status code: {response.status_code}"
 
     # Use BeautifulSoup to analyze the page's HTML
-    soup = BeautifulSoup(clean_text(response.text), 'html.parser')  # (lxml-xml, html5lib)
+    response.encoding = response.apparent_encoding
+    soup = BeautifulSoup(clean_text(response.text), 'html.parser')
 
     # Extract information from the book
-    title = soup.find('h1').text
+    title = soup.find('h1').text if soup.find('h1') else "Title not found on the page"
 
     # Category
-    category_a = soup.find('ul').find_all('a')  # a single 'ul' in html
-    category = category_a[2].text
+    category_a = soup.find('ul').find_all('a') if soup.find('ul') else False  # a 1'ul'
+    category = category_a[2].text if category_a else "Category not found on the page"
 
-    # UPC
-    table_td = soup.find('table').find_all('td')
-    info_table = [information.text for information in table_td]
-    universal_product_code = info_table[0]
-
-    # PRICE
-    price_excluding_tax = info_table[2]
-    price_including_tax = info_table[3]
-
-    # Number available
-    number_available = info_table[5].split('(')[-1].split(' ')[0]
+    # Table information
+    if soup.find('table'):
+        table_td = soup.find('table').find_all('td')
+        table = [information.text for information in table_td]
+        # UPC
+        universal_product_code = table[0] if table else "UPC not found on the page"
+        # Price
+        price_excluding_tax = table[2] if len(table) >= 2 else "Price_ex not found on the page"
+        price_including_tax = table[3] if len(table) >= 3 else "Price_in not found on the page"
+        # Number available
+        if len(table) >= 5:
+            number_available = table[5].split('(')[-1].split(' ')[0]
+        else:
+            number_available = "number_available not found on the page"
 
     # image_url
-    div_img = soup.find('div', class_='item active').find('img')
-    image_url = BASE_URL + div_img['src']
+    if soup.find('div', class_='item active'):
+        div_img = soup.find('div', class_='item active').find('img')
+        image_url = BASE_URL + div_img['src']
+    else:
+        image_url = "image_url not found on the page"
 
     # Review rating
     p_star = soup.find('p', class_='star-rating')
-    review_rating = p_star['class'][1]
+    review_rating = p_star['class'][1] if p_star else "Review rating not found on the page"
 
     # Description
-    product_description_p = soup.find('article', class_='product_page').find('p', recursive=False)
-    product_description = product_description_p.text if product_description_p else ''
+    description_ar = soup.find('article', class_='product_page')
+    if description_ar:
+        description_p = description_ar.find('p', recursive=False)
+        description = description_p.text if description_p else 'Description not found on the page'
 
     # Summary of book scraper information
     book_data = {"title": title,
@@ -65,7 +79,7 @@ def scrap_book_data(url):
                  'price_including_tax': price_including_tax,
                  "number_available": number_available,
                  "review_rating": review_rating,
-                 "product_description": product_description
+                 "product_description": description
                  }
     return book_data
 
