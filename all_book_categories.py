@@ -6,14 +6,15 @@ from my_library import BASE_URL
 
 # Function for retrieves all URLs of book categories
 def scrap_category_urls(url):
+
     response = requests.get(url)
-    response.encoding = response.apparent_encoding
 
     # Check response status
     if response.status_code != 200:
         return f"HTTP request error status code: {response.status_code}"
 
     # Use BeautifulSoup to analyze the page's HTML
+    response.encoding = response.apparent_encoding
     soup = BeautifulSoup(response.text, 'html.parser')
 
     # Extract book category URLs
@@ -22,3 +23,4 @@ def scrap_category_urls(url):
     urls_of_categories = [BASE_URL + li.find('a')['href'] for li in li_category]
 
     return urls_of_categories
+
