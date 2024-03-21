@@ -21,6 +21,9 @@ while True:
     if your_choice not in ['1', '2', '3', '4']:
         continue
 
+    if your_choice == '4':
+        break
+
     # Scrape all category data
     if your_choice == '1':
         get_all_data(BASE_URL)
@@ -37,9 +40,6 @@ while True:
     # Scrape book data
     if your_choice == '3':
         get_book_data(url)
-        break
-
-    if your_choice == '4':
         break
 
 # Records the end and displays the performance measurement
