@@ -1,5 +1,4 @@
 import time
-import requests
 
 from a_single_book import get_book_data
 from a_single_book_category import get_category_data
