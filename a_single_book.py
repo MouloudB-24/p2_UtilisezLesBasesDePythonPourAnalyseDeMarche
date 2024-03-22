@@ -92,11 +92,8 @@ def extract_book_data(url, soup, category="", title=""):
 
     # Description
     description_ar = soup.find('article', class_='product_page')
-    if description_ar:
-        description_p = description_ar.find('p', recursive=False)
-        description = description_p.text
-    else:
-        description = 'Description not found on the page'
+    description_p = description_ar.find('p', recursive=False)
+    description = description_p.text if description_p else 'Description not found on the page'
 
     # Summary of book scraper information
     raw_book_data = {"title": title,
@@ -192,8 +189,6 @@ def save_book_images(url, title, download_folder):
 # close the HTTP request session
 session.close()
 
-
 # Example of use
 if __name__ == '__main__':
     get_book_data("https://books.toscrape.com/catalogue/its-only-the-himalayas_981/index.html")
-
