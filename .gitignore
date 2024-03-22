@@ -1,4 +1,4 @@
-# Ignore extracder data folder
+# Ignore extracted data folder
 all_book_categories/
 
 # Ignore the virtual environment
