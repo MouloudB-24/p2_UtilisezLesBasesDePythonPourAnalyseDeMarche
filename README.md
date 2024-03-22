@@ -1,22 +1,22 @@
-I. Nom du Projet  : BookScrapePriceWatcher
+# Nom du Projet  : BookScrapePriceWatcher
 
-II. Objectif :
+# Objectif :
 L'objectif principal de "BookScrapePriceWatcher" est de simplifier le processus de surveillance des prix des livres 
 d'occasion sur les sites web de concurrents, en automatisant la collecte d'informations tarifaires.
 
-III. Fonctionnalités :
-1. Extract 
+# Fonctionnalités :
+## Extract 
  - Le programme extrait les informations de chaque livre du site Books To Scrap.
 
-2. Transform
+## Transform
  - Les données extraites sont transformées pour garantir une structure uniforme (nettoyage de texte)
 
-3. Load
+## Load
  - Création d'un dossier local "all_book_categories" avec une séparation logique des données.
  - Enregistrement des informations de chaque livre dans un fichier CSV dédié à la catégorie.
 
 
-IV. Installation :
+# Installation :
 1. Ouvrez le terminal ou l'invite de commandes selon l'OS.
 2. Clonez le répertoire avec la commande :
     git clone https://github.com/MouloudB-24/p2_UtilisezLesBasesDePythonPourAnalyseDeMarche
