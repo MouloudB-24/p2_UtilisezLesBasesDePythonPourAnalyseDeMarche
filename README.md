@@ -1,4 +1,4 @@
-# Nom du Projet  : BookScrapePriceWatcher
+# Projet  : Utilisation les bases de python pour l'analyse de marché
 
 # Objectif :
 Ce programme est un système de surveillance des prix des livres du site web "_Books to Scrape_". Il est conçu pour récupérer toutes les données essentielles de chaque livre, telles que les _prix_, les _titres_, les _catégories_, etc. En suivant le processus classique du pipeline **ETL** (_Extract, Transform et Load_), ce programme assure une extraction efficace des données, leur transformation pour garantir leur qualité et leur cohérence, puis leur chargement dans un format exploitable.
@@ -9,11 +9,11 @@ Ce programme est un système de surveillance des prix des livres du site web "_B
 
 **Transform :** Les données extraites sont transformées pour garantir une structure uniforme (nettoyage de texte)
 
-**Load :** Création d'un dossier local "all_book_categories" avec une séparation logique des données. Enregistrement des informations de chaque livre dans un fichier CSV dédié à la catégorie.
+**Load :** Création d'un dossier local "_all_book_categories_" avec une séparation logique des données. Enregistrement des informations de chaque livre dans un fichier _CSV_ dédié à la catégorie.
 
 
 # Installation :
-1. Ouvrez le terminal ou l'invite de commandes selon votre OS.
+1. Ouvrez le terminal ou l'invite de commandes selon votre _OS_.
 
 2. Clonez le répertoire avec la commande : `git clone https://github.com/MouloudB-24/p2_UtilisezLesBasesDePythonPourAnalyseDeMarche`
 
