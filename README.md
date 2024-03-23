@@ -29,7 +29,7 @@ Ce programme est un système de surveillance des prix des livres du site web "_B
 
 **Nota : Assurez-vous d'avoir un environnement Python configuré.**
 
-L'interface de Lancement  de programme :
+L'interface de lancement  de programme :
 
  """   _Welcome to the Books to scrapes price monitoring program, please select one of the following options:
         1 → Scraper data from all books
