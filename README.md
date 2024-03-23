@@ -23,16 +23,17 @@ d'occasion sur les sites web de concurrents, en automatisant la collecte d'infor
     `git clone https://github.com/MouloudB-24/p2_UtilisezLesBasesDePythonPourAnalyseDeMarche`
 
 3. Accédez au répertoire avec la commande :
-    cd p2_UtilisezLesBasesDePythonPourAnalyseDeMarche
-4. Assurez-vous d'avoir un environnement Python configuré
-5. Installez les dépendances avec la commande :
+    `cd p2_UtilisezLesBasesDePythonPourAnalyseDeMarche`
+
+4. Installez les dépendances avec la commande :
     pip install -r requirements.txt 
-6. Lancez le programme avec la commande :
+5. Lancez le programme avec la commande :
     python3 main.py
-7. Une fois la console lancée, elle vous invite à faire un choix : soit scraper tout le site (option 1), soit une 
+6. Une fois la console lancée, elle vous invite à faire un choix : soit scraper tout le site (option 1), soit une 
    catégorie de livre (option 2), soit un seul livre. Dans les deux dernières options, le programme vous invite à 
    entrer les URL des produits qui vous intéressent.
 
+**Nota : Assurez-vous d'avoir un environnement Python configuré**
 
 L'interface de Lancement  de programme :
 
