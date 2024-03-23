@@ -1,8 +1,9 @@
 # Nom du Projet  : BookScrapePriceWatcher
 
 # Objectif :
-L'objectif principal de "BookScrapePriceWatcher" est de simplifier le processus de surveillance des prix des livres 
-d'occasion sur les sites web de concurrents, en automatisant la collecte d'informations tarifaires.
+Ce programme est un système de surveillance des prix des livres du site web "_Books to Scrape_". Il est conçu pour récupérer toutes les données essentielles de chaque livre, telles que les _prix_, les _titres_, les _catégories_, etc. En suivant le processus classique du pipeline **ETL** (_Extract, Transform et Load_), ce programme assure une extraction efficace des données, leur transformation pour garantir leur qualité et leur cohérence, puis leur chargement dans un format exploitable.
+
+
 
 # Fonctionnalités :
 ## Extract 
