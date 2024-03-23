@@ -17,9 +17,11 @@ d'occasion sur les sites web de concurrents, en automatisant la collecte d'infor
 
 
 # Installation :
-1. Ouvrez le terminal ou l'invite de commandes selon l'OS.
+1. Ouvrez le terminal ou l'invite de commandes selon votre OS.
+
 2. Clonez le répertoire avec la commande :
-    git clone https://github.com/MouloudB-24/p2_UtilisezLesBasesDePythonPourAnalyseDeMarche
+    `git clone https://github.com/MouloudB-24/p2_UtilisezLesBasesDePythonPourAnalyseDeMarche`
+
 3. Accédez au répertoire avec la commande :
     cd p2_UtilisezLesBasesDePythonPourAnalyseDeMarche
 4. Assurez-vous d'avoir un environnement Python configuré
