@@ -17,6 +17,7 @@ while True:
     your_choice = input("Enter your choice 👉: ")
 
     if your_choice not in ['1', '2', '3']:
+        print("\nPlease enter a valid option!")
         continue
 
     if your_choice == '3':
