@@ -24,8 +24,8 @@ Ce programme est un système de surveillance des prix des livres du site web "_B
 5. Lancez le programme avec la commande : `python3 main.py`
 
 6. Une fois la console lancée, elle vous invite à faire un choix : soit scraper tout le site (_option 1_), soit une 
-   catégorie de livre (_option 2_), soit un seul livre (_option 3_). Dans les deux dernières options, le programme vous invite à 
-   entrer les **URL** des produits qui vous intéressent.
+   catégorie de livre (_option 2_). Dans la dernière option, le programme vous invite à 
+   entrer l'**URL** de produit qui vous intéresse.
 
 **Nota : Assurez-vous d'avoir un environnement Python configuré.**
 
@@ -34,8 +34,7 @@ L'interface de lancement  de programme :
  """   _Welcome to the Books to scrapes price monitoring program, please select one of the following options:
         1 → Scraper data from all books
         2 → Scraper data from books in a category
-        3 → Scraper data from a single book
-        4 → Quit program_
+        3 → Quit program_
           
 _Enter your choice 👉: 1, 2, 3 OU 4_
 """
