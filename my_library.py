@@ -17,5 +17,4 @@ def clean_title(title):
     title = ''.join(char for char in title if char not in string.punctuation)
 
     # `Replace spaces with underscores
-    title = title.strip().replace(' ', '_')
-    return title
+    return title.strip().replace(' ', '_')

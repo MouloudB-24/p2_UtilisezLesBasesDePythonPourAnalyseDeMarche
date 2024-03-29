@@ -1,8 +1,7 @@
 import time
 
-from a_single_book import get_book_data
 from a_single_book_category import get_category_data
-from all_book_categories import get_all_data
+from all_book_categories import get_all_data, get_category_urls
 from my_library import BASE_URL
 
 # Records the start of performance measurement
@@ -13,15 +12,14 @@ while True:
     Welcome to the Books to scrapes price monitoring program, please select one of the following options:
         1 → Scraper data from all books
         2 → Scraper data from books in a category
-        3 → Scraper data from a single book
-        4 → Quit program
+        3 → Quit program
           """)
     your_choice = input("Enter your choice 👉: ")
 
-    if your_choice not in ['1', '2', '3', '4']:
+    if your_choice not in ['1', '2', '3']:
         continue
 
-    if your_choice == '4':
+    if your_choice == '3':
         break
 
     # Scrape all category data
@@ -29,17 +27,16 @@ while True:
         get_all_data(BASE_URL)
         break
 
-    # Enter the url of the book's web page (op3) or that of the category (op2)
-    url = input("Enter URL 👉: ")
-
     # Scrape category data
     if your_choice == '2':
-        get_category_data(url)
-        break
-
-    # Scrape book data
-    if your_choice == '3':
-        get_book_data(url)
+        while True:
+            url_of_category = input("Please enter the URL of a book category  👉: ")
+            if url_of_category not in get_category_urls(BASE_URL):
+                print("\nInvalid URL! Please try again.")
+                continue
+            else:
+                get_category_data(url_of_category)
+                break
         break
 
 # Records the end and displays the performance measurement
