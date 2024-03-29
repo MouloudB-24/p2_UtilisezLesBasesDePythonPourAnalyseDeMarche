@@ -36,5 +36,5 @@ L'interface de lancement  de programme :
         2 → Scraper data from books in a category
         3 → Quit program_
           
-_Enter your choice 👉: 1, 2, 3 OU 4_
+_Enter your choice 👉: 1, 2, OU 3_
 """
