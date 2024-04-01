@@ -19,7 +19,11 @@ Ce programme est un système de surveillance des prix des livres du site web "_B
 
 3. Accédez au répertoire avec la commande : `cd p2_UtilisezLesBasesDePythonPourAnalyseDeMarche`
 
-4. Installez les dépendances avec la commande : `pip install -r requirements.txt`
+4. Créer un environement virtuel avec cette commande : `python3 -m venv env`
+`
+5. Activez l'environnement virtuel avec cette commande : `source env/bin/activate`
+
+5. Installez les dépendances avec la commande : `pip install -r requirements.txt`
     
 5. Lancez le programme avec la commande : `python3 main.py`
 
