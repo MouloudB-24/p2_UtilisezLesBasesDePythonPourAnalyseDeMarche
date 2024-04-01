@@ -5,6 +5,7 @@ import requests
 from bs4 import BeautifulSoup
 from tqdm import tqdm
 
+
 from a_single_book import get_book_data
 from my_library import BASE_URL, clean_text
 
@@ -19,6 +20,7 @@ def get_category_data(url_of_category):
     for url_of_book in tqdm(get_all_urls_in_a_category(url_of_category)):
         try:
             get_book_data(url_of_book)
+
         except Exception as e:
             print(f"Error on this URL {url_of_book}: {e}")
 
