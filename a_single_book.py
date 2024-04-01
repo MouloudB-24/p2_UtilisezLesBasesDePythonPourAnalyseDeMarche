@@ -7,9 +7,6 @@ from bs4 import BeautifulSoup
 
 from my_library import BASE_URL, clean_text, clean_title
 
-# Create a session to manage HTTP requests
-session = requests.Session()
-
 
 # Function to extract data from a book
 def get_book_data(url_of_book):
@@ -19,29 +16,31 @@ def get_book_data(url_of_book):
     :param url_of_book: The URL of the book.
     :return: Data for a given book.
     """
-    # Make a GET request to the book URL
-    response = session.get(url_of_book)
+    # Create a session to manage HTTP requests
+    with requests.Session() as session:
+        # Make a GET request to the book URL
+        response = session.get(url_of_book)
 
-    # Check response status
-    if response.status_code != 200:
-        print(f"HTTP request error status code: {response.status_code}")
-        sys.exit()
+        # Check response status
+        if response.status_code != 200:
+            print(f"HTTP request error status code: {response.status_code}")
+            sys.exit()
 
-    # Use BeautifulSoup to analyze the page's HTML
-    response.encoding = response.apparent_encoding
-    soup = BeautifulSoup(response.text, 'html.parser')
+        # Use BeautifulSoup to analyze the page's HTML
+        response.encoding = response.apparent_encoding
+        soup = BeautifulSoup(response.text, 'html.parser')
 
-    # Extract raw data from a book
-    raw_book_data = extract_book_data(url_of_book, soup)
+        # Extract raw data from a book
+        raw_book_data = extract_book_data(url_of_book, soup)
 
-    # Transform book data
-    clean_book_data = transform_book_data(raw_book_data)
+        # Transform book data
+        clean_book_data = transform_book_data(raw_book_data)
 
-    # Load data from a book / Save data in a CSV file and book image
-    download_folder = save_book_data(clean_book_data, clean_book_data['category'])
-    save_book_images(clean_book_data["image_url"], clean_book_data["title"], download_folder)
+        # Load data from a book / Save data in a CSV file and book image
+        download_folder = save_book_data(clean_book_data, clean_book_data['category'])
+        save_book_images(clean_book_data["image_url"], clean_book_data["title"], download_folder, session)
 
-    return clean_book_data
+        return clean_book_data
 
 
 # Function for scrapping raw book data
@@ -136,8 +135,8 @@ def save_book_data(clean_data, category, current_folder=Path.cwd()):
     :param clean_data: Clean book data as a dictionary.
     :param category: The category of the book.
     :param current_folder: The folder where the file CSV will be saved.
-    :return: The folder where book images are saved.
-    """
+    :return: The folder where book images are saved."""
+
     # Create save folders
     download_folder = current_folder / 'all_book_categories' / category / 'images_of_books'
     download_folder.mkdir(exist_ok=True, parents=True)
@@ -160,7 +159,7 @@ def save_book_data(clean_data, category, current_folder=Path.cwd()):
 
 
 # Function for downloading and saving book images
-def save_book_images(url_of_book_img, title, download_folder):
+def save_book_images(url_of_book_img, title, download_folder, session):
     """
     Saves book images in a specified folder.
 
@@ -185,8 +184,8 @@ def save_book_images(url_of_book_img, title, download_folder):
 
 
 # close the HTTP request session
-session.close()
+# session.close()
 
 # Example of use
 if __name__ == '__main__':
-    get_book_data("https://books.toscrape.com/catalogue/its-only-the-himalayas_9/index.html")
+    get_book_data("https://books.toscrape.com/catalogue/its-only-the-himalayas_981/index.html")
