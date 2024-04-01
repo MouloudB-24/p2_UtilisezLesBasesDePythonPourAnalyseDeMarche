@@ -14,8 +14,9 @@ def get_all_data(base_url):
     :return: None.
     """
     n = 1
-    for url_of_category in get_category_urls(base_url):
-        print(f'Scraping category {n}/{len(get_category_urls(base_url))} ...')
+    urls_category = get_category_urls(base_url)
+    for url_of_category in urls_category:
+        print(f'Scraping category {n}/{len(urls_category)} ...')
         get_category_data(url_of_category)
         n += 1
 
