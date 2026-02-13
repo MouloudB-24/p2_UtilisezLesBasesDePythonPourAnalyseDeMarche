@@ -34,14 +34,20 @@ def _transform_price(price_str: str) -> float:
     """
     Convert string price to float.
     """
-    return float(price_str.replace('£', ''))
+    try:
+        return float(price_str.replace('£', ''))
+    except ValueError:
+        raise ValueError(f"Invalid price format: {price_str}")
 
 
 def _transform_availability(availability_str: str) -> int:
     """
     Extract the avialable number.
     """
-    return int(availability_str.split('(')[-1].split()[0])
+    try: 
+        return int(availability_str.split('(')[-1].split()[0])
+    except ValueError:
+        raise ValueError(f"Invalid availability format: {availability_str}")
 
 
 def _transform_rating(rating_str: str) -> int:
@@ -52,5 +58,4 @@ def _transform_rating(rating_str: str) -> int:
     
     if rating_str not in rating_map:
         raise ValueError(f"Invalid rating: {rating_str}")
-    
     return rating_map.get(rating_str, 0)
