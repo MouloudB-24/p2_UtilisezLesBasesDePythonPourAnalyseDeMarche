@@ -1,6 +1,12 @@
 # Function for cleaning data
 import string
 
+class BookTransformError(Exception):
+    """
+    Error during book transformation.
+    """
+    pass
+
 
 def transform_book_data(raw_data: dict) -> dict:
     """
@@ -37,7 +43,7 @@ def _transform_price(price_str: str) -> float:
     try:
         return float(price_str.replace('£', ''))
     except ValueError:
-        raise ValueError(f"Invalid price format: {price_str}")
+        raise BookTransformError(f"Invalid price format: {price_str}")
 
 
 def _transform_availability(availability_str: str) -> int:
@@ -46,8 +52,8 @@ def _transform_availability(availability_str: str) -> int:
     """
     try: 
         return int(availability_str.split('(')[-1].split()[0])
-    except ValueError:
-        raise ValueError(f"Invalid availability format: {availability_str}")
+    except (ValueError, IndexError):
+        raise BookTransformError(f"Invalid availability format: {availability_str}")
 
 
 def _transform_rating(rating_str: str) -> int:
