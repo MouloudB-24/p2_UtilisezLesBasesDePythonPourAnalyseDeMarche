@@ -1,63 +1,84 @@
+from bs4 import BeautifulSoup
+
+
+class BookScrapingError(Exception):
+    """
+    Error during book scraping
+    """
+    pass
+
 
 # Function for scrapping raw book data
-def extract_book_data(url_of_book, soup, category="", title=""):
+def parse_book_data(soup: BeautifulSoup) -> dict: 
     """
-    Extracts information from a book.
+    Parse book information from HTML soup.
 
-    :param url_of_book: The URL of the book.
     :param soup: BeautifulSoup object representing the page's HTML.
-    :param category: The category of the book.
-    :param title: The title of the book.
     :return: The dictionary containing raw book data.
     """
-    # Extract information from the book
-    if not title:
-        title = soup.find('h1').text if soup.find('h1') else "Title not found on the page"
+    # Title
+    title_tag = soup.find('h1')
+    if not title_tag:
+        raise BookScrapingError("Title not found")
+    title = title_tag.text      
 
     # Category
-    if not category:
-        category_a = soup.find('ul', class_="breadcrumb").find_all('a')
-        category = category_a[2].text if len(category_a) >= 2 else "Category not found on the page"
+    breadcrumb = soup.find('ul', class_="breadcrumb")
+    if not breadcrumb:
+        raise BookScrapingError("Category breadcrumb not found")
+    category_links = breadcrumb.find_all("a")
+    if len(category_links) < 3:
+        raise BookScrapingError("Category link not found")
+    category = category_links[2].text
 
-    # Table information
-    if soup.find('table'):
-        table_td = soup.find('table').find_all('td')
-        table = [information.text for information in table_td]
-        # UPC
-        universal_product_code = table[0]
-        # Price
-        price_excluding_tax = table[2]
-        price_including_tax = table[3]
-        # Number available
-        number_available = table[5].split('(')[-1].split(' ')[0]
-    else:
-        universal_product_code = "UPC not found on the page"
-        price_excluding_tax = "Price_ex not found on the page"
-        price_including_tax = "Price_in not found on the page"
-        number_available = "number_available not found on the page"
+    # Table information (obligatoire)
+    table = soup.find('table')
+    if not table:
+        raise BookScrapingError("Product table not found")
 
-    # image_url
-    if soup.find('div', class_='item active'):
-        image_url_div = soup.find('div', class_='item active').find('img')
-        image_url = BASE_URL + image_url_div['src']
-    else:
-        image_url = "image_url not found on the page"
+    table_td = table.find_all('td')
+    if len(table_td) < 6:
+        raise BookScrapingError(f"Incomplete table: expected 6+ cells, found {len(table_td)}")
 
-    # Review rating
+    # UPC
+    universal_product_code = table_td[0].text
+    # Price
+    price_excluding_tax = table_td[2].text
+    price_including_tax = table_td[3].text
+    # Number available
+    number_available = table_td[5].text.split('(')[-1].split(' ')[0]
+
+    # Image URL (obligatoire)
+    image_div = soup.find('div', class_='item active')
+    if not image_div:
+        raise BookScrapingError("Image container not found")
+
+    image_tag = image_div.find('img')
+    if not image_tag or 'src' not in image_tag.attrs:
+        raise BookScrapingError("Image src not found")
+
+    image_relative_url = image_tag['src']
+
+    # Review rating (obligatoire)
     p_star = soup.find('p', class_='star-rating')
-    review_rating = p_star['class'][1] if p_star else "Review rating not found on the page"
+    if not p_star or len(p_star.get('class', [])) < 2:
+        raise BookScrapingError("Review rating not found")
 
-    # Description
+    review_rating = p_star['class'][1]
+
+    # Description (optionnel - None si absent)
+    description = None
     description_ar = soup.find('article', class_='product_page')
-    description_p = description_ar.find('p', recursive=False)
-    description = description_p.text if description_p else 'Description not found on the page'
-
+    if description_ar:
+        description_p = description_ar.find('p', recursive=False)
+        if description_p:
+            description = description_p.text
+            
     # Summary of book scraper information
     raw_book_data = {"title": title,
                      "category": category,
                      "universal_product_code": universal_product_code,
-                     "product_page_url": url_of_book,
-                     'image_url': image_url,
+                     'image_relative_url': image_relative_url,
                      "price_excluding_tax": price_excluding_tax,
                      'price_including_tax': price_including_tax,
                      "number_available": number_available,
