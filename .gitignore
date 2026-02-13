@@ -3,6 +3,7 @@ all_book_categories/
 
 # Ignore the virtual environment
 env/
+venv/
 
 # Ignore automatically generated files and folders
 .DS_Store
