@@ -13,7 +13,6 @@ def transform_book_data(raw_data: dict) -> dict:
         "title": _transform_title(raw_data["title"]),
         "category": raw_data["category"].strip(),
         "universal_product_code": raw_data["universal_product_code"].strip(),
-        "image_relative_url": raw_data["image_relative_url"],
         "price_excluding_tax": _transform_price(raw_data["price_excluding_tax"]),
         "price_including_tax": _transform_price(raw_data["price_including_tax"]),
         "number_available": _transform_availability(raw_data["number_available"]),
