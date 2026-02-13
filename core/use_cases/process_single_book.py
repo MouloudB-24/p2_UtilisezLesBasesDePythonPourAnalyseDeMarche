@@ -1,47 +1,54 @@
-import sys
+import streamlit as st
+from pathlib import Path
 from bs4 import BeautifulSoup
-import requests
+from urllib.parse import urljoin
 
-from core.extract.book_parser import extract_book_data
-from core.load.book_loader import save_book_data, save_book_images
+from core.services.http_client import HttpClient
+from core.extract.book_parser import parse_book_data
 from core.transform.book_transformer import transform_book_data
+from core.load.data_loader import load_book_data
+from core.load.image_downloader import download_image
 
 
-# Function to extract data from a book
-def get_book_data(url_of_book):
+def process_single_book(book_url: str, http_client: HttpClient, base_url: str, output_dir: Path) -> dict:
     """
-    Retrieves data for a single book.
-
-    :param url_of_book: The URL of the book.
-    :return: Data for a given book.
+    Process download, parse, transform and save.
+    
+    Args:
+        book_url: URL of the book page
+        http_client: HTTP client instance
+        base_url: Base URL for constructing absolute URLs
+        output_dir: Root directory for saving data
+    
+    Returns:
+        Clean book data as dictionary
     """
-    # Create a session to manage HTTP requests
-    with requests.Session() as session:
-        # Make a GET request to the book URL
-        response = session.get(url_of_book)
-
-        # Check response status
-        if response.status_code != 200:
-            print(f"HTTP request error status code: {response.status_code}")
-            sys.exit()
-
-        # Use BeautifulSoup to analyze the page's HTML
-        response.encoding = response.apparent_encoding
-        soup = BeautifulSoup(response.text, 'html.parser')
-
-        # Extract raw data from a book
-        raw_book_data = extract_book_data(url_of_book, soup)
-
-        # Transform book data
-        clean_book_data = transform_book_data(raw_book_data)
-
-        # Load data from a book / Save data in a CSV file and book image
-        download_folder = save_book_data(clean_book_data, clean_book_data['category'])
-        save_book_images(clean_book_data["image_url"], clean_book_data["title"], download_folder, session)
-
-        return clean_book_data
+    # Download HTML
+    html = http_client.get_text(book_url)
+    
+    # Parse
+    soup = BeautifulSoup(html, 'html.parser')
+    raw_book_data = parse_book_data(soup)
+    
+    # Construct absolute image URL
+    image_url = urljoin(base_url, raw_book_data["image_relative_url"])
+    
+    # Transform
+    clean_book_data = transform_book_data(raw_book_data)
+    clean_book_data["image_url"] = image_url
+    
+    # Save CSV
+    category = clean_book_data["category"]
+    csv_path = output_dir / category / f"{category}.csv"
+    load_book_data(clean_book_data, csv_path)
+    
+    # Download image
+    image_path = output_dir / category / "images" / f"{clean_book_data['title']}.jpg"
+    download_image(image_url, image_path, http_client)
+    
+    return clean_book_data
     
 
 # Example of use
 if __name__ == '__main__':
-    get_book_data("https://books.toscrape.com/catalogue/its-only-the-himalayas_981/index.html")
+    pass
