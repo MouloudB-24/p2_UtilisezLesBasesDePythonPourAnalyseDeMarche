@@ -9,9 +9,9 @@ class HttpClient:
         self.timeout = timeout
         self.session = requests.Session()
         
-    def get(self, url: str="") -> str:
+    def get_text(self, url: str) -> str:
         """
-        Perfoms a GET request
+        Perfoms a GET request and return text content
         
         :param url: full url 
         :return: content of the response in text
@@ -20,6 +20,18 @@ class HttpClient:
         response.raise_for_status()
         
         return response.text
+    
+    def get_bytes(self, url: str)  -> bytes:
+        """
+        Perform GET request and return binary content
+        
+        :param url: full url
+        :return: content of the response in byte
+        """
+        response = self.session.get(url, timeout=self.timeout)
+        response.raise_for_status()
+        
+        return response.content
     
     def close(self):
         """
